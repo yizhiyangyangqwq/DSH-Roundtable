@@ -1,0 +1,14 @@
+# Dependencies — this plugin has none, but a stray install should not be committed.
+node_modules/
+
+# Editor / OS noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and local scratch
+*.log
+npm-debug.log*
+.DSH产物工作区/

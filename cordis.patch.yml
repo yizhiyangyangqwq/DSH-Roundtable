@@ -1,0 +1,9 @@
+# roundtable bundle patch.
+#
+# One `insert` mounts the Host row that owns the /api/roundtable routes and the
+# model calls. The browser half is declared by package.json's `dsh.client` and
+# binds to the row whose name is the bare package name, so `name` must stay
+# exactly as written.
+- insert:
+    - id: roundtable
+      name: '@local/roundtable'

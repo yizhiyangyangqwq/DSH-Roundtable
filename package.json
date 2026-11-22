@@ -1,0 +1,33 @@
+{
+  "name": "@local/roundtable",
+  "version": "1.0.0",
+  "description": "圆桌 — 多模型群聊。选几个模型，让它们在一个群里对话，模型调用走 DSH 自己的通道。",
+  "author": "一只杨洋qwq",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true
+    }
+  }
+}

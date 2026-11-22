@@ -1,0 +1,16 @@
+# Keep source as-is; do not let the platform rewrite line endings on checkout.
+* text=auto eol=lf
+
+# Explicitly binary so Git never tries to diff or convert them.
+*.png binary
+*.jpg binary
+*.ico binary
+*.webp binary
+
+# These are read by DSH and by Node directly, so their bytes should be stable.
+*.js text eol=lf
+*.mjs text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.svg text eol=lf
+*.md text eol=lf
