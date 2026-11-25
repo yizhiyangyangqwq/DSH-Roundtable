@@ -131,14 +131,91 @@ ctx.slots.register({ name: 'sidebar.panellist', id: 'roundtable', order: 40, lab
 
 ## 安装
 
-已挂进 profile：
+插件不在 npm 上。走「克隆 + 本地链接」，四步。
 
-- `~/.dsh/profiles/desktop/package.json` 加了依赖和 bundle
-- `node_modules/@local/roundtable` 建了 junction 指向本目录
+### 1. 克隆
 
-**需要重启 DSH 才生效**——插件在启动时加载。
+```bash
+git clone https://github.com/yizhiyangyangqwq/DSH-Roundtable
+```
 
-> `pnpm install` 可能会因为 profile 里其他依赖连不上而失败。链接本地插件用 junction 手动建即可，不需要联网。
+记住这个目录的绝对路径，下面要用。
+
+### 2. 在 profile 里登记
+
+profile 一般在：
+
+| 系统 | 路径 |
+|---|---|
+| Windows | `%USERPROFILE%\.dsh\profiles\desktop\package.json` |
+| macOS / Linux | `~/.dsh/profiles/desktop/package.json` |
+
+> 如果你的 profile 不叫 `desktop`，换成实际目录名。
+
+改**两处**，名字必须完全一致：
+
+```jsonc
+{
+  "dependencies": {
+    // ① 路径换成你自己克隆的位置
+    "@local/roundtable": "link:C:/你/克隆/的/DSH-Roundtable"
+  },
+  "agent": {
+    "profile": {
+      "bundles": [
+        // ② 原来就有的别删，在数组里加上这一行
+        "@local/roundtable"
+      ]
+    }
+  }
+}
+```
+
+**为什么两处都要改**：`dependencies` 只是让 Node 能解析到这个包；`bundles` 才是「启用」开关——
+DSH 只加载 `bundles` 里的插件。只加依赖不加 bundles，侧栏会出现「圆桌」，但一发消息就 404。
+
+### 3. 建 node_modules 链接
+
+Node 要在 profile 的 `node_modules` 下找到这个名字。**不需要联网，不需要 pnpm install。**
+
+Windows（不需要管理员，用 cmd）：
+
+```bat
+mklink /J "%USERPROFILE%\.dsh\profiles\desktop\node_modules\@local\roundtable" "C:\你\克隆\的\DSH-Roundtable"
+```
+
+macOS / Linux：
+
+```bash
+ln -s /你/克隆/的/DSH-Roundtable ~/.dsh/profiles/desktop/node_modules/@local/roundtable
+```
+
+### 4. 重启 DSH
+
+插件在启动时加载，改完必须重启。
+
+### 装好了怎么确认
+
+1. 侧栏出现「圆桌」一行
+2. 点进去能「+ 新建群」→「+ 模型」，列表里是你 DSH 里已配好的模型
+3. 发一句话，能看到流式回答
+
+**如果第 2 步列表空、或发消息报 404 / 未知路由**：Host 那一半没加载，通常是第 2 步的 `bundles` 没加。
+
+---
+
+## 换包名（可选）
+
+默认包名 `@local/roundtable` 里的 `@local` 只是个本地占位作用域，不是真实 npm scope。
+想换成别的名字，**三个文件要一起改**，否则对不上：
+
+| 位置 | 内容 |
+|---|---|
+| `package.json` | `"name"` |
+| `cordis.patch.yml` | `name:` |
+| `client.js` | `window.__ModuleLoader__.load({ id: ... })` |
+
+改完 profile 里两处、以及 junction 的名字也要跟着换。
 
 ---
 
